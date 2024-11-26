@@ -48,6 +48,9 @@ class Board:
             self.piece.translate(opposites[direction])
         self.set_piece()
         self.new_piece = self.touching_ground()
+    
+    def drop(self):
+        pass
 
     def clear_piece(self):
         """Removes piece from grid."""
@@ -86,6 +89,7 @@ class Board:
         return False
 
     def __repr__(self):
+        """String representation of the board."""
         output = "-" * (self.width + 2) + "\n"
         for i in range(self.height):
             output = output + "|"

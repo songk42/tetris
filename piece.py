@@ -11,7 +11,7 @@ class Piece:
 
     # All of these transformations should modify the existing coordinates
     def rotate(self, direction="clockwise") -> None:
-        """Rotates piece 90 degrees about the origin"""
+        """Rotates piece 90 degrees about the origin."""
         if self.letter == "O": pass
         if direction == "clockwise":
             self.grid = np.flip(self.grid.T, axis=1)
@@ -21,6 +21,7 @@ class Piece:
             raise ValueError("Invalid direction")
 
     def translate(self, direction) -> None:
+        """Translates the piece one step in the given direction."""
         if direction == "left":
             self.offset[1] -= 1
         elif direction == "right":
@@ -33,7 +34,7 @@ class Piece:
             raise ValueError("Invalid direction")
     
     def get_coords(self) -> np.ndarray:
-        """Returns the coordinates of the piece"""
+        """Returns the coordinates of the piece."""
         coords = []
         for i in range(self.width):
             for j in range(self.width):
@@ -92,11 +93,11 @@ CENTERS = {
 }
 
 def piece_from_letter(letter):
-    """Creates a new piece corresponding to the provided letter"""
+    """Creates a new piece corresponding to the provided letter."""
     return Piece(GRID[letter].copy(), CENTERS[letter].copy(), letter)
 
 def random_piece():
-    """Returns a random piece"""
+    """Returns a random piece."""
     letter = random.choice(LETTERS)
     return piece_from_letter(letter)
 
