@@ -20,6 +20,8 @@ class Board:
     def add_piece(self, piece) -> None:
         self.piece = piece
         self.new_piece = False
+        while max([i for (i, _) in self.piece.get_coords()]) >= self.height:
+            self.move("down")
         if self.check_collision() == 2:
             self.game_over = True
         self.set_piece()
@@ -28,30 +30,36 @@ class Board:
         """Move the current piece one step down"""
         self.move("down")
     
-    def rotate(self) -> None:
-        """Rotate the current piece"""
+    def rotate(self) -> bool:
+        """Rotate the current piece. Returns True if successful."""
         self.clear_piece()
         self.piece.rotate()
         colliding = self.check_collision()
-        if colliding == 1:
+        if colliding != 0:
             self.piece.rotate("counterclockwise")
         self.set_piece()
         self.new_piece = self.touching_ground()
+        return colliding == 0
 
-    def move(self, direction) -> None:
-        """Move the current piece in the given direction"""
+    def move(self, direction) -> bool:
+        """Move the current piece in the given direction. Returns True if the move was successful."""
         opposites = {"left": "right", "right": "left", "down": "up", "up": "down"}
         self.clear_piece()
         self.piece.translate(direction)
         colliding = self.check_collision()
-        if colliding == 1:
+        if colliding != 0:
             self.piece.translate(opposites[direction])
         self.set_piece()
         self.new_piece = self.touching_ground()
+        return colliding == 0
     
     def drop(self) -> int:
         """Drops the piece as far as it goes, and returns the distance it fell."""
-        return 0
+        distance = 0
+        while not self.new_piece:
+            self.move("down")
+            distance += 1
+        return distance
 
     def clear_rows(self) -> int:
         """Clears any full rows and returns the number of rows cleared."""

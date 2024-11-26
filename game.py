@@ -25,17 +25,15 @@ class Game:
 
     def step(self):
         self.board.step()
-        # somewhere along here, some pieces sink down one more level than they should
-        # yeah it's definitely because of those down-arrow inputs
         if self.board.new_piece:
             rows_cleared = self.board.clear_rows()
             self.add_score(ROW_SCORES[rows_cleared] * (self.level+1))
             self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
             self.set_next_piece()
         if self.board.game_over:
-            print("Game over!")
-            print("Score:", self.score)
-            exit()
+            self.stdscr.erase()
+            self.stdscr.addstr(f"Game over!\nScore: {self.score}")
+            sys.exit(0)
 
     def set_next_piece(self):
         self.next_piece = piece.random_piece()
@@ -52,7 +50,7 @@ class Game:
         output = str(self.board) + "\n"
         output += "Score: " + str(self.score) + "\n"
         output += "Level: " + str(self.level) + "\n"
-        output += "Next piece: " + self.next_piece.letter
+        output += "Next piece: " + self.next_piece.letter + "\n"
         return output
 
 # actually run the game
@@ -64,20 +62,24 @@ if __name__ == "__main__":
         user_input = g.stdscr.getch()
         if user_input == curses.KEY_RIGHT:
             g.board.move("right")
+            g.refresh_board()
         elif user_input == curses.KEY_LEFT:
             g.board.move("left")
+            g.refresh_board()
         elif user_input == curses.KEY_UP:
             g.board.rotate()
+            g.refresh_board()
         elif user_input == curses.KEY_DOWN:
-            g.board.move("down")
-            g.add_score(1)
+            success = g.board.move("down")
+            if success: g.add_score(1)  # bonus for soft dropping
+            g.refresh_board()
         elif user_input == 32:  # space bar
             dist = g.board.drop()
             g.add_score(dist)
+            g.refresh_board()
         elif user_input == 113:  # 'q'
             curses.endwin()
             sys.exit(0)
-        g.refresh_board()
         # move piece one step down
         if t.time() - step_time > g.step_interval:
             step_time = t.time()
