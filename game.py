@@ -14,6 +14,10 @@ class Game:
         if self.board.new_piece:
             self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
             self.set_next_piece()
+        if self.board.game_over:
+            print("Game over!")
+            print("Score:", self.score)
+            exit()
 
     def set_next_piece(self):
         self.next_piece = piece.random_piece()
@@ -24,4 +28,4 @@ if __name__ == "__main__":
     while True:
         g.step()
         print(g.board, flush=True)
-        t.sleep(0.5)
+        t.sleep(0.1)

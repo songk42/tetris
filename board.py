@@ -12,6 +12,7 @@ class Board:
         self.piece = None
         self.new_piece = False
         self.add_piece(piece.random_piece())
+        self.game_over = False
 
     def reset_grid(self):
         self.grid = np.array([[" " for _ in range(self.width)] * self.height])
@@ -19,6 +20,8 @@ class Board:
     def add_piece(self, piece):
         self.piece = piece
         self.new_piece = False
+        if self.check_collision() == 2:
+            self.game_over = True
         self.set_piece()
 
     def step(self):
