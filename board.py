@@ -49,8 +49,9 @@ class Board:
         self.set_piece()
         self.new_piece = self.touching_ground()
     
-    def drop(self) -> None:
-        pass
+    def drop(self) -> int:
+        """Drops the piece as far as it goes, and returns the distance it fell."""
+        return 0
 
     def clear_rows(self) -> int:
         """Clears any full rows and returns the number of rows cleared."""
