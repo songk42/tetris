@@ -1,4 +1,6 @@
 import numpy as np
+import piece
+import time as t
 
 class Board:
     def __init__(self, width=10, height=20):
@@ -9,6 +11,7 @@ class Board:
         self.grid = np.array([[" " for _ in range(width)]] * height)
         self.piece = None
         self.new_piece = False
+        self.add_piece(piece.random_piece())
 
     def reset_grid(self):
         self.grid = np.array([[" " for _ in range(self.width)] * self.height])
@@ -16,6 +19,7 @@ class Board:
     def add_piece(self, piece):
         self.piece = piece
         self.new_piece = False
+        self.set_piece()
 
     def step(self):
         """Move the current piece one step down"""
@@ -70,10 +74,11 @@ class Board:
     
     def touching_ground(self) -> bool:
         """Check if the current piece is touching the ground or resting on another piece."""
-        for (i, j) in self.piece.get_coords():
+        coords = self.piece.get_coords()
+        for (i, j) in coords:
             if i == self.height - 1:
                 return True
-            if self.grid[i + 1, j] != " ":
+            if (i+1, j) not in coords and self.grid[i + 1, j] != " ":
                 return True
         return False
 
