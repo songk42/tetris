@@ -1,16 +1,22 @@
 import numpy as np
 import random
 
+LETTERS = ["I", "O", "T", "S", "Z", "J", "L"]
+
 class Piece:
-    def __init__(self, grid, center, letter, offset=(0, 0)):
+    def __init__(self, grid: np.ndarray, center: np.ndarray, letter: str, offset: np.ndarray = np.zeros(2)):
         self.grid = grid
-        self.center = center
-        self.letter = letter
+        assert grid.shape[0] == grid.shape[1], "Piece must be inside a square grid."
         self.width = grid.shape[0]
-        self.offset = np.array(offset)
+        self.center = center
+        assert self.center.shape == (2,), "Center must be a 2D vector."
+        self.letter = letter
+        assert letter in LETTERS, "Invalid piece letter."
+        self.offset = offset.astype(int)
+        assert self.offset.shape == (2,), "Offset must be a 2D vector."
 
     # All of these transformations should modify the existing coordinates
-    def rotate(self, direction="clockwise") -> None:
+    def rotate(self, direction: str = "clockwise") -> None:
         """Rotates piece 90 degrees about the origin."""
         if self.letter == "O": pass
         if direction == "clockwise":
@@ -20,7 +26,7 @@ class Piece:
         else:
             raise ValueError("Invalid direction")
 
-    def translate(self, direction) -> None:
+    def translate(self, direction: str) -> None:
         """Translates the piece one step in the given direction."""
         if direction == "left":
             self.offset[1] -= 1
@@ -45,8 +51,6 @@ class Piece:
     def get_row_strings(self) -> str:
         """Returns the piece as a list of strings representing each row."""
         return ["".join(["X" if c else " " for c in row]) for row in self.grid]
-
-LETTERS = ["I", "O", "T", "S", "Z", "J", "L"]
 
 GRID = {
     "I": np.array([

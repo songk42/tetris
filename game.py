@@ -19,12 +19,9 @@ class Game:
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.lines_cleared = 0
-        # curses.cbreak()
-        # curses.nonl()
-        # curses.curs_set(0)
-        # curses.noecho()
 
-    def step(self):
+    def step(self) -> None:
+        """One time step of the game. Also where score/level checks are."""
         self.board.step()
         # time to add a new piece to the board
         if self.board.new_piece:
@@ -47,19 +44,23 @@ class Game:
             print(f"Game over!\nScore: {self.score}")
             sys.exit(0)
 
-    def set_next_piece(self):
+    def set_next_piece(self) -> None:
+        """Set a random next piece to be added to the board."""
         self.next_piece = piece.random_piece()
 
-    def refresh_board(self):
+    def refresh_board(self) -> None:
+        """Refresh the terminal display of the game state."""
         self.stdscr.erase()
         s = str(self)
         self.stdscr.addstr(str(self))
         self.stdscr.refresh()
     
-    def add_score(self, score):
+    def add_score(self, score) -> None:
+        """Update the score."""
         self.score += score
 
-    def swap_pieces(self):
+    def swap_pieces(self) -> None:
+        """Put the current piece in reserve, and replace with reserve/new (if there is no reserve) piece."""
         self.board.clear_piece()
         if self.reserve_piece is None:
             # if no reserve piece already exists, store the current piece and spawn the next piece
@@ -71,7 +72,8 @@ class Game:
             self.reserve_piece, self.board.piece = self.board.piece, self.reserve_piece
         self.board.set_piece()
     
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Returns string representation of the game state."""
         title_row = "TETRIS"
         score_row = "Score: " + str(self.score)
         level_row = "Level: " + str(self.level)

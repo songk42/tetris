@@ -2,10 +2,11 @@ import numpy as np
 import piece
 
 class Board:
-    def __init__(self, width=10, height=20):
+    def __init__(self, width: int = 10, height: int = 20):
         # TODO: height vs. print height? how will pieces spawn
         self.width = width
         self.height = height
+        assert width > 0 and height > 0, "Width and height must be positive integers."
         # (0, 0) is the top left corner of the board
         self.grid = np.array([[" " for _ in range(width)]] * height)
         self.piece = None
@@ -16,7 +17,7 @@ class Board:
     def reset_grid(self) -> None:
         self.grid = np.array([[" " for _ in range(self.width)] * self.height])
     
-    def add_piece(self, piece) -> None:
+    def add_piece(self, piece: piece.Piece) -> None:
         self.piece = piece
         self.new_piece = False
         while max([i for (i, _) in self.piece.get_coords()]) >= self.height:
@@ -40,7 +41,7 @@ class Board:
         self.new_piece = self.touching_ground()
         return colliding == 0
 
-    def move(self, direction) -> bool:
+    def move(self, direction: str) -> bool:
         """Move the current piece in the given direction. Returns True if the move was successful."""
         opposites = {"left": "right", "right": "left", "down": "up", "up": "down"}
         self.clear_piece()
