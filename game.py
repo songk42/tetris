@@ -14,10 +14,11 @@ class Game:
         self.level = 1
         self.next_piece = piece.random_piece()
         self.reserve_piece = None
-        self.step_interval = 1  # seconds between each step
+        self.step_interval = 0.8  # seconds between each step
         self.stdscr = curses.initscr()
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
+        self.lines_cleared = 0
         # curses.cbreak()
         # curses.nonl()
         # curses.curs_set(0)
@@ -25,14 +26,23 @@ class Game:
 
     def step(self):
         self.board.step()
+        # time to add a new piece to the board
         if self.board.new_piece:
-            rows_cleared = self.board.clear_rows()
-            self.add_score(ROW_SCORES[rows_cleared] * (self.level+1))
+            lines_cleared = self.board.clear_rows()
+            self.lines_cleared += lines_cleared
+            self.add_score(ROW_SCORES[lines_cleared] * (self.level+1))
             self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
             self.set_next_piece()
+            # do a level-up check level up by clearing 10 * level lines
+            if self.lines_cleared >= 10 * self.level:
+                self.level += 1
+                self.lines_cleared = 0
+                self.step_interval = max(0.02, self.step_interval * 0.8)  # TODO idk actually
         if self.board.game_over:
-            self.stdscr.erase()
-            self.stdscr.addstr(f"Game over!\nScore: {self.score}")
+            # self.stdscr.erase()
+            # self.stdscr.addstr(f"Game over!\nScore: {self.score}")
+            # self.refresh_board()
+            print(f"Game over!\nScore: {self.score}")
             sys.exit(0)
 
     def set_next_piece(self):
