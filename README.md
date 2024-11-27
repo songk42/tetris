@@ -2,7 +2,8 @@
 
 ## How to play
 1. Clone the repository
-2. Run `python game.py` from inside the repository
+2. Install numpy
+3. Run `python game.py` from inside the repository
 
 ## Controls
 * left/right/down arrow keys to move piece
