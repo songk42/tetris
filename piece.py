@@ -41,6 +41,10 @@ class Piece:
                 if self.grid[i, j]:
                     coords.append((i + self.offset[0], j + self.offset[1]))
         return coords
+    
+    def get_row_strings(self) -> str:
+        """Returns the piece as a list of strings representing each row."""
+        return ["".join(["X" if c else " " for c in row]) for row in self.grid]
 
 LETTERS = ["I", "O", "T", "S", "Z", "J", "L"]
 

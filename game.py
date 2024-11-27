@@ -72,12 +72,45 @@ class Game:
         self.board.set_piece()
     
     def __repr__(self):
-        output = str(self.board) + "\n"
-        output += "Score: " + str(self.score) + "\n"
-        output += "Level: " + str(self.level) + "\n"
-        output += "Next piece: " + self.next_piece.letter + "\n"
-        output += "Reserve piece: " + (self.reserve_piece.letter if self.reserve_piece else "None") + "\n"
-        return output
+        title_row = "TETRIS"
+        score_row = "Score: " + str(self.score)
+        level_row = "Level: " + str(self.level)
+        next_piece_rows = self.next_piece.get_row_strings()
+        next_piece_rows = ["Next piece: " + next_piece_rows[0]] + next_piece_rows[1:]
+        if self.reserve_piece:
+            reserve_rows = self.reserve_piece.get_row_strings()
+            reserve_rows = ["Reserve piece: " + reserve_rows[0]] + reserve_rows[1:]
+        else:
+            reserve_rows = ["Reserve piece: None"]
+        spacer = "  "
+
+        # TODO: this works but is messy
+        output = ""
+        next_piece_ndx = 0
+        reserve_piece_ndx = 0
+        for i, row in enumerate(self.board.get_row_strings()):
+            if i == 6:
+                output += row + spacer + title_row
+            elif i == 7:
+                output += row
+            elif i == 8:
+                output += row + spacer + level_row
+            elif i == 9:
+                output += row + spacer + score_row
+            elif i == 10:
+                output += row + spacer + next_piece_rows[0]
+                next_piece_ndx = i
+            elif next_piece_ndx and (0 < (i - next_piece_ndx) < len(next_piece_rows)):
+                output += row + (" " * (12 + len(spacer))) + next_piece_rows[i - next_piece_ndx]
+            elif next_piece_ndx and reserve_piece_ndx == 0:
+                output += row + spacer + reserve_rows[0]
+                reserve_piece_ndx = i
+            elif next_piece_ndx and (0 < (i - reserve_piece_ndx) < len(reserve_rows)):
+                output += row + (" " * (15 + len(spacer))) + reserve_rows[i - reserve_piece_ndx]
+            else:
+                output += row
+            output += "\n"
+        return output[:-1]
 
 # actually run the game
 if __name__ == "__main__":

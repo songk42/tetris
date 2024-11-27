@@ -1,6 +1,5 @@
 import numpy as np
 import piece
-import time as t
 
 class Board:
     def __init__(self, width=10, height=20):
@@ -107,14 +106,18 @@ class Board:
                 return True
         return False
 
+    def get_row_strings(self) -> str:
+        """Returns a list of strings representing the rows + boundaries of the board."""
+        output = ["-" * (self.width + 2)]
+        for i in range(self.height):
+            s = "|"
+            for j in range(self.width):
+                s = s + self.grid[i][j]
+            output.append(s + "|")
+        output.append("-" * (self.width + 2))
+        return output
+
     def __repr__(self) -> str:
         """String representation of the board."""
-        output = "-" * (self.width + 2) + "\n"
-        for i in range(self.height):
-            output = output + "|"
-            for j in range(self.width):
-                output = output + self.grid[i][j]
-            output = output + "|\n"
-        output = output + "-" * (self.width + 2)
-        return output
+        return "\n".join(self.get_row_strings())
 
