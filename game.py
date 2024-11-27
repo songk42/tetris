@@ -15,7 +15,7 @@ class Game:
         self.next_piece = piece.random_piece()
         self.reserve_piece = None
         self.step_interval = 0.8  # seconds between each step
-        self.stdscr = curses.initscr()
+        self.stdscr = curses.initscr()  # the thing that prints to the terminal
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.lines_cleared = 0
@@ -28,9 +28,11 @@ class Game:
         self.board.step()
         # time to add a new piece to the board
         if self.board.new_piece:
+            # update score
             lines_cleared = self.board.clear_rows()
             self.lines_cleared += lines_cleared
             self.add_score(ROW_SCORES[lines_cleared] * (self.level+1))
+            # initialize the next piece
             self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
             self.set_next_piece()
             # do a level-up check level up by clearing 10 * level lines
@@ -50,17 +52,31 @@ class Game:
 
     def refresh_board(self):
         self.stdscr.erase()
+        s = str(self)
         self.stdscr.addstr(str(self))
         self.stdscr.refresh()
     
     def add_score(self, score):
         self.score += score
+
+    def swap_pieces(self):
+        self.board.clear_piece()
+        if self.reserve_piece is None:
+            # if no reserve piece already exists, store the current piece and spawn the next piece
+            self.reserve_piece = self.board.piece
+            self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
+            self.set_next_piece()
+        else:
+            # if a reserve piece already exists, swap the current piece with the reserve piece
+            self.reserve_piece, self.board.piece = self.board.piece, self.reserve_piece
+        self.board.set_piece()
     
     def __repr__(self):
         output = str(self.board) + "\n"
         output += "Score: " + str(self.score) + "\n"
         output += "Level: " + str(self.level) + "\n"
         output += "Next piece: " + self.next_piece.letter + "\n"
+        output += "Reserve piece: " + (self.reserve_piece.letter if self.reserve_piece else "None") + "\n"
         return output
 
 # actually run the game
@@ -86,6 +102,9 @@ if __name__ == "__main__":
         elif user_input == 32:  # space bar
             dist = g.board.drop()
             g.add_score(dist)
+            g.refresh_board()
+        elif user_input == 99:  # 'c'
+            g.swap_pieces()
             g.refresh_board()
         elif user_input == 113:  # 'q'
             curses.endwin()
