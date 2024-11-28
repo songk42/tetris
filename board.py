@@ -3,15 +3,14 @@ import piece
 
 class Board:
     def __init__(self, width: int = 10, height: int = 20):
-        # TODO: height vs. print height? how will pieces spawn
         self.width = width
         self.height = height
         assert width > 0 and height > 0, "Width and height must be positive integers."
         # (0, 0) is the top left corner of the board
         self.grid = np.array([[" " for _ in range(width)]] * height)
         self.piece = None
-        self.new_piece = False
         self.add_piece(piece.random_piece())
+        self.new_piece = False
         self.game_over = False
 
     def reset_grid(self) -> None:

@@ -18,12 +18,11 @@ class Game:
         self.stdscr = curses.initscr()  # the thing that prints to the terminal
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
-        self.lines_cleared = 0
+        self.lines_cleared = 0  # specifically, lines cleared at this particular level
 
     def step(self) -> None:
         """One time step of the game. Also where score/level checks are."""
-        self.board.step()
-        # time to add a new piece to the board
+        # add a new piece to the board?
         if self.board.new_piece:
             # update score
             lines_cleared = self.board.clear_rows()
@@ -32,17 +31,20 @@ class Game:
             # initialize the next piece
             self.board.add_piece(piece.piece_from_letter(self.next_piece.letter))
             self.set_next_piece()
-            # do a level-up check level up by clearing 10 * level lines
+            # do a level-up check: level up by clearing (10 * level) lines
             if self.lines_cleared >= 10 * self.level:
                 self.level += 1
                 self.lines_cleared = 0
                 self.step_interval = max(0.02, self.step_interval * 0.8)  # TODO idk actually
+
         if self.board.game_over:
             # self.stdscr.erase()
             # self.stdscr.addstr(f"Game over!\nScore: {self.score}")
             # self.refresh_board()
             print(f"Game over!\nScore: {self.score}")
             sys.exit(0)
+
+        self.board.step()
 
     def set_next_piece(self) -> None:
         """Set a random next piece to be added to the board."""
