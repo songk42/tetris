@@ -121,16 +121,16 @@ if __name__ == "__main__":
     while True:
         # key controls
         user_input = g.stdscr.getch()
-        if user_input == curses.KEY_RIGHT:
+        if user_input == curses.KEY_RIGHT or user_input == 100:  # 'd'
             g.board.move("right")
             g.refresh_board()
-        elif user_input == curses.KEY_LEFT:
+        elif user_input == curses.KEY_LEFT or user_input == 97:  # 'a'
             g.board.move("left")
             g.refresh_board()
-        elif user_input == curses.KEY_UP:
+        elif user_input == curses.KEY_UP or user_input == 119:  # 'w'
             g.board.rotate()
             g.refresh_board()
-        elif user_input == curses.KEY_DOWN:
+        elif user_input == curses.KEY_DOWN or user_input == 115:  # 's'
             success = g.board.move("down")
             if success: g.add_score(1)  # bonus for soft dropping
             g.refresh_board()
